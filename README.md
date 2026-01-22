@@ -1,37 +1,48 @@
-# LiterAlura
-Projeto linha de comando que faz buscas de livros usando API da Gutendex, Salva os livros buscados e lista os livros salvos com diferentes tipos de exibição
+# LiterAlura - Catálogo de Livros
+O LiterAlura é uma aplicação de linha de comando (CLI) desenvolvida como parte de um desafio prático para a formação Java do programa Oracle Next Education (ONE). O sistema realiza o consumo da API Gutendex, permitindo a busca de obras literárias, a persistência de dados em um banco relacional e a geração de estatísticas sobre autores e idiomas.
 
-## Estrutura do projeto
+## 🛠️ Funcionalidades
+O sistema oferece uma interface interativa via console com as seguintes opções:
+
+- Buscar livro por título: Consulta a API externa e salva o livro e seu autor no banco de dados local.
+- Listar livros registrados: Exibe todos os livros que já foram persistidos no sistema.
+- Listar todos os livros: Realiza uma consulta geral de obras disponíveis diretamente na API Gutendex.
+- Listar livros por idioma: Filtra as obras salvas no banco de dados por siglas de idioma (ex: en, pt, es).
+- Listar autores vivos em determinado ano: Consulta a API por autores que estavam vivos no ano informado pelo utilizador.
+- Listar autores vivos e registrados: Filtra no banco de dados local os autores cadastrados que atendem ao critério de ano.
+
+## 🏗️ Estrutura e Tecnologias
+O projeto foi construído seguindo princípios de arquitetura desacoplada para facilitar a manutenção e escalabilidade:
+
+- Linguagem: Java 17.
+- Framework: Spring Boot 4.0.1.
+- Persistência: Spring Data JPA com Hibernate.
+- Banco de Dados: PostgreSQL.
+- Comunicação: HttpClient para consumo de API REST e Jackson para a desserialização de JSON.
+- Gerenciamento de Dependências: Gradle.
+- Arquitetura: Organização baseada em Portas e Adaptadores (Arquitetura Hexagonal).
+
+## 🚀 Como Executar
+### Pré-requisitos
+- Java JDK 17 ou superior.
+- PostgreSQL instalado e em execução.
+- Criação de um banco de dados local chamado literalura.
+
+### Configuração
+No arquivo src/main/resources/application.yaml, certifique-se de que as credenciais de acesso ao seu banco de dados local estão configuradas corretamente:
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/literalura
+    username: seu_usuario
+    password: sua_senha
 ```
-LiterAlura/
-├── application/
-│   ├── ports/
-│   │   ├── inbound/
-│   │   │   └── // Contém interfaces que definem os pontos de entrada para a aplicação. Estas portas são usadas por agentes externos que interagem com a aplicação, como interfaces de usuário ou requisições de API REST.
-│   │   └── outbound/
-│   │       └── // Define interfaces para serviços externos que a aplicação precisa consumir, como bancos de dados ou serviços REST externos. Estas portas ajudam a desacoplar a lógica de negócio dos detalhes de implementação do acesso a recursos externos.
-│   └── services/
-│       └── // Implementa a lógica da aplicação coordenando as atividades entre as portas e o domínio. Os serviços de aplicação desempenham um papel crucial na orquestração de operações de domínio, executando a lógica de negócio e atuando como uma ponte entre o domínio e os adaptadores de infraestrutura.
-├── domain/
-│   ├── exceptions/
-│   │   └── // Define exceções de domínio específicas que podem ser lançadas pela lógica de negócio.
-│   ├── entities/
-│   │   └── // Contém as entidades de domínio que encapsulam a lógica de negócio crítica e os dados.
-│   └── other domain folders/
-│       └── // Pode incluir objetos de valor (value objects), agregados, eventos de domínio, etc., que são fundamentais para a lógica de negócio e as regras de domínio.
-└── infrastructure/
-    ├── adapters/
-    │   ├── inbound/
-    │   │   ├── rest/
-    │   │   │   └── // Implementa adaptadores para interfaces web, tratando requisições HTTP recebidas e transformando-as em chamadas para as portas de entrada apropriadas.
-    │   │   ├── tasks/
-    │   │   │   └── // Para tarefas agendadas que realizam operações periódicas dentro da aplicação.
-    │   │   └── events/
-    │   │       └── // Gerencia a captura e o processamento de eventos do sistema ou eventos de integração com outros sistemas.
-    │   └── outbound/
-    │       ├── persistence/
-    │       │   └── // Implementa a persistência de dados, por exemplo, usando JPA para interagir com bancos de dados, encapsulando toda a lógica de acesso a dados.
-    │       └── rest/
-    │           └── // Contém os adaptadores necessários para fazer chamadas a APIs externas, encapsulando a lógica de como interagir com outros serviços web.
-    └── configuration/
-        └── // Configurações específicas do framework e da infraestrutura, como configurações de segurança, configuração de beans do Spring, etc.```
+
+### Execução via terminal
+```bash
+./gradlew bootRun
+```
+
+# 📄 Licença
+Este projeto está sob a licença MIT.
+Projeto desenvolvido por Thiago Nascimento Barros como parte do desafio da formação ONE (Alura & Oracle).
