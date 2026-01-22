@@ -37,7 +37,7 @@ public class RunStarting {
                     2. Listar livros registrados
                     3. Listar todos os livros
                     4. Listar livros por idioma
-                    
+                    5. Listar autores vivos em determinado ano
                     Digite sua opção:""");
             option = this.input.nextLine();
             switch (option) {
@@ -53,11 +53,24 @@ public class RunStarting {
                 case "4":
                     getListBookByLanguage();
                     break;
+                case "5":
+                    getListAuthorsByYears();
+                    break;
                 default:
                     break;
             }
         }
 
+    }
+
+    private void getListAuthorsByYears() {
+        System.out.println("Digite o determinado ano: ");
+        String year = input.nextLine();
+        var req = serviceJsonAPI.getDataOfAPI("https://gutendex.com/books?author_year_start=" + year + "&author_year_end=" + year);
+        var objs = serviceJsonAPI.convertInObject(ApiResponse.class, req);
+        var authors = serviceJsonAPI.convertObjInAuthors(objs);
+
+        authors.forEach(System.out::println);
     }
 
     private void getListBookByLanguage() {
