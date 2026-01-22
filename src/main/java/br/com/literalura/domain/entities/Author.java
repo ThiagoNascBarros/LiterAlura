@@ -1,5 +1,6 @@
 package br.com.literalura.domain.entities;
 
+import br.com.literalura.application.communication.response.ApiResponse;
 import br.com.literalura.application.communication.response.ResponseAuthor;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,4 +34,24 @@ public class Author {
         this.birthYear = responseAuthor.birthYear();
         this.deathYear = responseAuthor.deathYear();
     }
+
+    @Override
+    public String toString() {
+        String lifespan = (birthYear != null || deathYear != null)
+                ? String.format("(%s - %s)",
+                birthYear != null ? birthYear : "Desconhecido",
+                deathYear != null ? deathYear : "Presente")
+                : "(Datas desconhecidas)";
+
+        return String.format(
+                """
+                ---------------------------
+                👤 Autor: %s
+                   Período: %s
+                ---------------------------""",
+                name,
+                lifespan
+        );
+    }
+
 }

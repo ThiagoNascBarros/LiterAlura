@@ -3,6 +3,7 @@ package br.com.literalura.application.services;
 import br.com.literalura.application.communication.response.ApiResponse;
 import br.com.literalura.application.ports.inbound.interfaces.IServiceJsonAPI;
 import br.com.literalura.application.ports.inbound.repository.IBookRepository;
+import br.com.literalura.domain.entities.Author;
 import br.com.literalura.domain.entities.Book;
 import br.com.literalura.domain.exceptions.ErrorOnConsumerAPI;
 import br.com.literalura.domain.exceptions.ErrorOnConvertJson;
@@ -17,8 +18,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Scanner;
 
 @Log4j2
 @Service
@@ -63,6 +64,15 @@ public class ServiceJsonAPI implements IServiceJsonAPI {
     @Override
     public Book convertObjInEntity(ApiResponse res) {
         return new Book(res);
+    }
+
+    @Override
+    public List<Author> convertObjInAuthors(ApiResponse res) {
+        return res.results().stream()
+                .flatMap(b -> b.authors().stream()
+                        .map(Author::new))
+                .sorted(Comparator.comparing(Author::getName))
+                .toList();
     }
 
     @Override
