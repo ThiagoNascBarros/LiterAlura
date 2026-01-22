@@ -4,6 +4,7 @@ import br.com.literalura.application.communication.response.ApiResponse;
 import br.com.literalura.application.ports.inbound.repository.IAuthorRepository;
 import br.com.literalura.application.ports.inbound.repository.IBookRepository;
 import br.com.literalura.application.services.ServiceJsonAPI;
+import br.com.literalura.domain.entities.Book;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Collections;
@@ -35,8 +36,9 @@ public class RunStarting {
                     1. Buscar livro por titulo
                     2. Listar livros registrados
                     3. Listar todos os livros
-                    Digite sua opção:
-                    """);
+                    4. Listar livros por idioma
+                    
+                    Digite sua opção:""");
             option = this.input.nextLine();
             switch (option) {
                 case "1":
@@ -48,11 +50,33 @@ public class RunStarting {
                 case "3":
                     getAllBooks();
                     break;
+                case "4":
+                    getListBookByLanguage();
+                    break;
                 default:
                     break;
             }
         }
 
+    }
+
+    private void getListBookByLanguage() {
+        var languagens = bookRepository.findAll()
+                .stream()
+                .map(Book::getLanguage)
+                .distinct()
+                .toList();
+
+        System.out.println("=========== Selecione o idioma ===========");
+        languagens.forEach(b -> System.out.println(b));
+        System.out.println("==========================================");
+        System.out.print("-> ");
+
+        var languageSelect = input.nextLine().trim();
+
+        var books = bookRepository.findByLanguageContainingIgnoreCase(languageSelect);
+        System.out.println("Aqui está os livros da linguagem: " + languageSelect + "\n");
+        books.forEach(System.out::println);
     }
 
     private void getAllBooks() {
@@ -71,8 +95,19 @@ public class RunStarting {
         String title = input.nextLine();
 
         var req = serviceJsonAPI.getDataOfAPI("https://gutendex.com/books?search=" + title.replace(" ", "%20"));
-        List<ApiResponse> res = Collections.singletonList(serviceJsonAPI.convertInObject(ApiResponse.class, req));
-        res.forEach(System.out::println);
+        var res = serviceJsonAPI.convertInObject(ApiResponse.class, req);
+        var book = serviceJsonAPI.convertObjInEntity(res);
+
+        var search = authorRepository.findByName(book.getAuthor().getName());
+        if (search == null) {
+            authorRepository.save(book.getAuthor());
+        } else {
+            book.setAuthor(search);
+        }
+
+        bookRepository.save(book);
+
+        System.out.println(res.toString());
     }
 
 }

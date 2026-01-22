@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface IAuthorRepository extends JpaRepository<Author, UUID> {
+    Author findByName(String name);
 }

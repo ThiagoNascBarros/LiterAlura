@@ -50,7 +50,8 @@ public class Book {
                            Autor(es): %s
                            Idioma(s): %s
                            Downloads: %,.0f
-                        ---------------------------""",
+                        ---------------------------
+                """,
                 title,
                 author.getName(),
                 language,
