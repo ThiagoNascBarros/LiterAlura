@@ -33,7 +33,9 @@ public class ServiceJsonAPI implements IServiceJsonAPI {
 
     @Override
     public String getDataOfAPI(String address) {
-        HttpClient client = HttpClient.newHttpClient();
+        HttpClient client = HttpClient.newBuilder()
+                .followRedirects(HttpClient.Redirect.ALWAYS)
+                .build();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(address))
                 .build();

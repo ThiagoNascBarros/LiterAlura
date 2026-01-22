@@ -25,9 +25,9 @@ public class RunStarting {
     }
 
     public void StartingRun() {
-        int option = 1;
+        String option = "1";
 
-        while (option != 0) {
+        while (!option.equalsIgnoreCase("0")) {
             log.info("""
                     
                     
@@ -37,15 +37,15 @@ public class RunStarting {
                     3. Listar todos os livros
                     Digite sua opção:
                     """);
-            option = this.input.nextInt();
+            option = this.input.nextLine();
             switch (option) {
-                case 1:
+                case "1":
                     getBookByTitle();
                     break;
-                case 2:
+                case "2":
                     getListBooks();
                     break;
-                case 3:
+                case "3":
                     getAllBooks();
                     break;
                 default:
@@ -58,7 +58,7 @@ public class RunStarting {
     private void getAllBooks() {
         var req = serviceJsonAPI.getDataOfAPI("https://gutendex.com/books/");
         List<ApiResponse> res = Collections.singletonList(serviceJsonAPI.convertInObject(ApiResponse.class, req));
-        res.forEach(r -> log.info(r));
+        res.forEach(log::info);
     }
 
     private void getListBooks() {
