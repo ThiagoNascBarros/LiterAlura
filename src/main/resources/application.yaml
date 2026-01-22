@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  application:
+    name: literalura
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/literalura
+    username: postgres
+    password: root

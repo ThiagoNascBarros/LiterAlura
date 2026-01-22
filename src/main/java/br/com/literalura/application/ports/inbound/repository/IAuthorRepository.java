@@ -1,0 +1,11 @@
+package br.com.literalura.application.ports.inbound.repository;
+
+import br.com.literalura.domain.entities.Author;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.UUID;
+
+@Repository
+public interface IAuthorRepository extends JpaRepository<Author, UUID> {
+}

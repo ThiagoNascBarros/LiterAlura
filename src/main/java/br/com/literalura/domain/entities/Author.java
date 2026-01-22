@@ -1,13 +1,12 @@
 package br.com.literalura.domain.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import br.com.literalura.application.communication.response.ResponseAuthor;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity(name = "author")
@@ -26,4 +25,12 @@ public class Author {
 
     private Integer deathYear;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Book> books;
+
+    public Author(ResponseAuthor responseAuthor) {
+        this.name = responseAuthor.name();
+        this.birthYear = responseAuthor.birthYear();
+        this.deathYear = responseAuthor.deathYear();
+    }
 }
