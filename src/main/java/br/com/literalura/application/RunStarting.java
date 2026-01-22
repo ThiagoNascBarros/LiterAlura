@@ -4,10 +4,12 @@ import br.com.literalura.application.communication.response.ApiResponse;
 import br.com.literalura.application.ports.inbound.repository.IAuthorRepository;
 import br.com.literalura.application.ports.inbound.repository.IBookRepository;
 import br.com.literalura.application.services.ServiceJsonAPI;
+import br.com.literalura.domain.entities.Author;
 import br.com.literalura.domain.entities.Book;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -38,6 +40,7 @@ public class RunStarting {
                     3. Listar todos os livros
                     4. Listar livros por idioma
                     5. Listar autores vivos em determinado ano
+                    6. Listar autores vivos e registrados em determinado ano
                     Digite sua opção:""");
             option = this.input.nextLine();
             switch (option) {
@@ -56,6 +59,9 @@ public class RunStarting {
                 case "5":
                     getListAuthorsByYears();
                     break;
+                case "6":
+                    getListAuthorsRegistersByYear();
+                    break;
                 default:
                     break;
             }
@@ -63,9 +69,21 @@ public class RunStarting {
 
     }
 
+    private void getListAuthorsRegistersByYear() {
+        System.out.println("Digite o determinado ano: ");
+        Integer year = input.nextInt();
+
+        var author = authorRepository.findByBirthYearAndDeathYearAfter(year, year);
+
+        author.stream()
+                .sorted(Comparator.comparing(Author::getName))
+                .forEach(System.out::println);
+    }
+
     private void getListAuthorsByYears() {
         System.out.println("Digite o determinado ano: ");
         String year = input.nextLine();
+
         var req = serviceJsonAPI.getDataOfAPI("https://gutendex.com/books?author_year_start=" + year + "&author_year_end=" + year);
         var objs = serviceJsonAPI.convertInObject(ApiResponse.class, req);
         var authors = serviceJsonAPI.convertObjInAuthors(objs);
@@ -89,7 +107,7 @@ public class RunStarting {
 
         var books = bookRepository.findByLanguageContainingIgnoreCase(languageSelect);
         System.out.println("Aqui está os livros da linguagem: " + languageSelect + "\n");
-        books.forEach(System.out::println);
+        books.forEach(log::info);
     }
 
     private void getAllBooks() {
@@ -100,7 +118,7 @@ public class RunStarting {
 
     private void getListBooks() {
         var titlesBook = bookRepository.findAll();
-        titlesBook.forEach(System.out::println);
+        titlesBook.forEach(log::info);
     }
 
     private void getBookByTitle() {
@@ -111,11 +129,11 @@ public class RunStarting {
         var res = serviceJsonAPI.convertInObject(ApiResponse.class, req);
         var book = serviceJsonAPI.convertObjInEntity(res);
 
-        var search = authorRepository.findByName(book.getAuthor().getName());
-        if (search == null) {
+        var searchAuthorRegister = authorRepository.findByName(book.getAuthor().getName());
+        if (searchAuthorRegister == null) {
             authorRepository.save(book.getAuthor());
         } else {
-            book.setAuthor(search);
+            book.setAuthor(searchAuthorRegister);
         }
 
         bookRepository.save(book);
